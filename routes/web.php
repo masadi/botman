@@ -17,7 +17,6 @@ use App\Models\UserPayment;
 */
 
 Route::get('/', function () {
-    return view('welcome');
     $user = User::first();
     if(!$user){
         for($i=1;$i<=3;$i++){
@@ -37,12 +36,16 @@ Route::get('/', function () {
     } else {
 
         $users = User::whereDoesntHave('payments', function ($query) {
-            $query->whereIn('payment_date', ['2022-08-04', '2022-08-02', '2022-08-03']);
+            //$query->whereIn('payment_date', ['2022-08-04', '2022-08-02', '2022-08-03']);
             //$query->whereDate('payment_date', '>', '2022-08-01');
             //$query->whereDate('payment_date', '<', '2022-08-03');
+            $query->whereBetween('payment_date', ['2022-08-01', '2022-08-03']);
         })->get();
+        $users = User::whereBetween('payment_date', ['2022-08-01', '2022-08-03'])->get();
         dd($users);
 
     }
+    return view('welcome');
+    
 });
 Route::match(['get', 'post'], '/botman', [BotManController::class, 'handle']);
